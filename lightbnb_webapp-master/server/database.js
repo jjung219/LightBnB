@@ -1,5 +1,5 @@
-const properties = require('./json/properties.json');
-const users = require('./json/users.json');
+// const properties = require('./json/properties.json');
+// const users = require('./json/users.json');
 
 /// Users
 const { Client } = require('pg');
@@ -19,7 +19,7 @@ client.connect().then(() =>console.log('connected!')).catch((err) => console.log
  * @return {Promise<{}>} A promise to the user.
  */
 const getUserWithEmail = function(email) {
-  console.log('Getting user with email...')
+  console.log('Getting user with email...');
   const queryString = (`
     SELECT * 
     FROM users 
@@ -34,7 +34,7 @@ const getUserWithEmail = function(email) {
         return null;
       }
     });
-}
+};
 exports.getUserWithEmail = getUserWithEmail;
 
 /**
@@ -51,8 +51,8 @@ const getUserWithId = function(id) {
 
   return client
     .query(queryString, [id])
-    .then(res => res.rows[0])
-}
+    .then(res => res.rows[0]);
+};
 exports.getUserWithId = getUserWithId;
 
 
@@ -68,12 +68,12 @@ const addUser =  function(user) {
     INSERT INTO users (name, email, password)
     VALUES ($1, $2, $3)
     RETURNING *;
-  `)
+  `);
 
   return client
     .query(queryString, [user.name, user.email, user.password])
-    .then(res => res.rows[0])
-}
+    .then(res => res.rows[0]);
+};
 exports.addUser = addUser;
 
 /// Reservations
@@ -113,7 +113,7 @@ exports.getAllReservations = getAllReservations;
  * @return {Promise<[{}]>}  A promise to the properties.
  */
 const getAllProperties = function(options, limit = 10) {
-  console.log('getting all the properties...')
+  console.log('getting all the properties...');
 
   const queryParams = [];
 
@@ -125,7 +125,7 @@ const getAllProperties = function(options, limit = 10) {
 
   if (options.city) {
     queryParams.push(`%${options.city}%`);
-    queryString += `WHERE city LIKE $${queryParams.length}`
+    queryString += `WHERE city LIKE $${queryParams.length}`;
   }
 
   if (options.minimum_price_per_night) {
