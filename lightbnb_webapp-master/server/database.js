@@ -1,17 +1,8 @@
 // const properties = require('./json/properties.json');
 // const users = require('./json/users.json');
 
+const db = require('./db');
 /// Users
-const { Client } = require('pg');
-
-const client = new Client({
-  user: 'vagrant',
-  password: '123',
-  host: 'localhost',
-  database: 'lightbnb'
-});
-
-client.connect().then(() =>console.log('connected!')).catch((err) => console.log('error on connection',err));
 
 /**
  * Get a single user from the database given their email.
@@ -25,7 +16,7 @@ const getUserWithEmail = function(email) {
     FROM users 
     WHERE email = $1`
   );
-  return client
+  return db
     .query(queryString, [email])
     .then(res => {
       if (res.rows.length) {
@@ -49,7 +40,7 @@ const getUserWithId = function(id) {
   WHERE id = $1
   `);
 
-  return client
+  return db
     .query(queryString, [id])
     .then(res => res.rows[0]);
 };
@@ -70,7 +61,7 @@ const addUser =  function(user) {
     RETURNING *;
   `);
 
-  return client
+  return db
     .query(queryString, [user.name, user.email, user.password])
     .then(res => res.rows[0]);
 };
@@ -97,7 +88,7 @@ const getAllReservations = function(guest_id, limit = 10) {
     LIMIT $2;
   `);
 
-  return client
+  return db
     .query(queryString, [guest_id, limit])
     .then(res => res.rows)
     .catch(err => console.log('query error', err.stack));
@@ -171,7 +162,7 @@ const getAllProperties = function(options, limit = 10) {
     LIMIT $${queryParams.length};
   `;
 
-  return client
+  return db
     .query(queryString, queryParams)
     .then(res => {
       return res.rows;
@@ -197,7 +188,7 @@ const addProperty = function(property) {
 
   console.log('adding property...');
 
-  return client
+  return db
     .query(queryString, queryParams)
     .then(res => res.rows)
     
